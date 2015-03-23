@@ -1,55 +1,50 @@
-var request = require('request');
-var cheerio = require('cheerio');
-var async=require('async');
-var _ = require('lodash');
-
-
-var dontWatch=[];//"si_widget/ms11"
-var serversToWatch=["sv2lxrmp01","sv2lxrmp02","sv2lxrmp03","sv2lxrmp04"];
-var errors=[];
+"use strict";
+var Monit = require("./lib/monit");
 var nodemailer = require('nodemailer');
 var smtpTransport = require('nodemailer-smtp-transport');
-var username = "scloaduser" , password = "test";
-transport = nodemailer.createTransport(smtpTransport({
-    host: process.env.MAIL_HOST || "localhost",
-    port: process.env.MAIL_PORT || 25
-}));
 
-async.each(serversToWatch, function (item,cb) {
-    request({
-        url:'http://'+item+':4997',
-        headers: { 'Authorization': 'Basic '+(new Buffer(username+":"+password)).toString('base64')}
-    }, function (error, response, html) {
-        if (!error && response.statusCode == 200) {
-            $ = cheerio.load(html);
-            $('tr.active0').each(function(index,row){
-                errors.push(row.children[0].children[0].attribs.name);
-            });
-            cb();
-        }
-        else{
-            errors.push(item);
-            cb();
+function haproxyWatch(){
+
+}
+
+haproxyWatch.prototype.checkHealth = function(config,callback){
+    var $this=this;
+    var monit = new Monit();
+    monit.checkHealth(config.watch,config.auth,config.dontWatch,config.port,function(err,result){
+        if(err) callback(err);
+        if(config.smtp){
+            console.log("sending email");
+            $this.sendEmail(config.smtp,result,function(err){
+                callback(err);
+            })
+        }else{
+            callback(null,result);
         }
     });
-},function(){
-    if(errors.length){
-        console.log(_.difference(_.uniq(errors),dontWatch));
-        var mailOptions = {
-            from: process.env.EMAIL_SENDER || "9chakri@gmail.com", // sender address
-            to: process.env.EMAIL_TO || "9chakri@gmail.com",
-            subject: "Server health :  Following services are down !", // Subject line
-            text: JSON.stringify(errors,null,"\t") // plaintext body
-            //html: JSON.stringify(errors,null,"\t") // html body
-        };
-        try{
-	        transport.sendMail(mailOptions, function(error, info){
-        	    console.log(error,info);
-	        });
-        }
-        catch(ex){
-	    console.log(ex);	
-        }
-    }
-});
+}
 
+haproxyWatch.prototype.sendEmail=function(smtp,healthInfo,callback){
+    console.log(smtp,healthInfo);
+    this.transport = nodemailer.createTransport(smtpTransport({
+        host: smtp.host || "localhost",
+        port: smtp.port || 25
+    }));
+
+    var mailOptions = {
+        from: smtp.from, // sender address
+        to: smtp.to,
+        subject: smtp.subject, // Subject line
+        text: JSON.stringify(healthInfo, null, "\t") // plaintext body
+        //html: JSON.stringify(errors,null,"\t") // html body
+    };
+    try {
+        this.transport.sendMail(mailOptions, function (error, info) {
+            callback(error,info);
+        });
+    }
+    catch (ex) {
+        callback(ex);
+    }
+}
+
+module.exports =  haproxyWatch;

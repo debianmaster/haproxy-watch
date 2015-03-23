@@ -1,6 +1,6 @@
 {
   "name": "haproxy-watch",
-  "version": "1.0.1",
+  "version": "1.0.5",
   "description": "haproxy watch",
   "main": "index.js",
   "dependencies": {
@@ -16,11 +16,38 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "Chakradhar Jonagam <9chakri@gmail.com>",
+  "author": {
+    "name": "Chakradhar Jonagam",
+    "email": "9chakri@gmail.com"
+  },
   "license": "ISC",
   "keywords": [
     "urlwatch",
     "haproxy",
     "monit"
-  ]
+  ],
+  "_id": "haproxy-watch@1.0.1",
+  "_shasum": "c595e1cbc053eec3c31e382b9e14cb84b8f84f24",
+  "_from": "haproxy-watch@",
+  "_npmVersion": "1.4.28",
+  "_npmUser": {
+    "name": "debianmaster",
+    "email": "9chakri@gmail.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/debianmaster/haproxy-watch.git"
+  },
+  "maintainers": [
+    {
+      "name": "debianmaster",
+      "email": "9chakri@gmail.com"
+    }
+  ],
+  "dist": {
+    "shasum": "c595e1cbc053eec3c31e382b9e14cb84b8f84f24",
+    "tarball": "http://registry.npmjs.org/haproxy-watch/-/haproxy-watch-1.0.1.tgz"
+  },
+  "directories": {},
+  "_resolved": "https://registry.npmjs.org/haproxy-watch/-/haproxy-watch-1.0.1.tgz"
 }
