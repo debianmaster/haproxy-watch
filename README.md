@@ -2,8 +2,8 @@
 
 
 Usage
-`$ npm install haproxy-watch`  
 
+`$ npm install haproxy-watch`
 
 
 ```javascript
@@ -29,11 +29,11 @@ var haproxyWatch = new proxyWatch();
 haproxyWatch.checkHealth({
     watch:["lxrmp03","lxrmp04"],
     dontWatch:["ramp_push/lxrmp10"],
-    auth:{username:"ramp",password:"g6r6na"},
+    auth:{username:"admin",password:"pass"},
     smtp:{
-        host:"mailhost.corp.equinix.com",
-        port:25,from:"ramp@equinix.com",
-        to:"cjonagam@equinix.com",
+        host:"mailhost.yourhost.com",
+        port:25,from:"me@mycompany.com",
+        to:"support@mycompany.com",
         subject:"Following services are down"
     }
 },function(err,result){
